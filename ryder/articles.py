@@ -204,7 +204,8 @@ def read(url, lang=True):
             "img": img,
             "content": content,
             "lang": detected_lang,
-            "author": author
+            "author": author,
+            "url": url
         }
     except ParseError:
         return None
