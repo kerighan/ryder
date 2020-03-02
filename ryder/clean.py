@@ -36,6 +36,9 @@ def simple_filter(source, url, stop_urls):
 
     if len(source) + 16 >= len(url):
         return False
+
+    if "mailto:" in url:
+        return False
     return True
 
 
@@ -45,6 +48,8 @@ def correct_url(source, protocol, url):
         return protocol + url
     elif url[:1] == "/":
         return source + url
+    elif "http" not in url[:5]:
+        return source + "/" + url
     return url
 
 

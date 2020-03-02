@@ -31,12 +31,13 @@ def get_lang(title, desc, content):
         return None
 
 
-def request(url):
-    req = requests.get(url, headers=headers)
+def request(url, timeout=10):
+    req = requests.get(url, headers=headers, timeout=timeout)
     if req.status_code == 200:
         text = req.text
-        root = html.fromstring(text)
-        return text, root
+        if len(text) != 0 and text is not None:
+            root = html.fromstring(text)
+            return text, root
     raise ConnectionError
 
 

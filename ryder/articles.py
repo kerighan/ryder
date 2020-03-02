@@ -62,42 +62,42 @@ def get_author(root):
 def get_created_time(html, root):
     t = root.xpath("//meta[@itemprop='dateModified']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
 
     t = root.xpath("//meta[@itemprop='datePublished']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
 
     t = root.xpath("//meta[@property='og:article:modified_time']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
 
     t = root.xpath("//meta[@property='article:modified_time']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
 
     t = root.xpath("//meta[@property='twitter:article:modified_time']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
 
     t = root.xpath("//meta[@property='og:article:published_time']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
     
     t = root.xpath("//meta[@property='article:published_time']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
     
     t = root.xpath("//meta[@property='twitter:article:published_time']")
     if len(t) > 0:
-        created_time = dateparser.parse(t[0].attrib["content"])
+        created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
 
     t = re.findall(r'dateModified\":[\s]+\"(.+?)\"', html)
@@ -117,7 +117,7 @@ def get_created_time(html, root):
 
     t = root.xpath("//time")
     if len(t) > 0:
-        created_time = dateparser.parse(t[-1].attrib.get("datetime", None))
+        created_time = dateparser.parse(t[-1].attrib.get("datetime", ""))
         return created_time
 
     t = root.xpath("//*[contains(@class, 'date')]")
@@ -208,4 +208,6 @@ def read(url, lang=True):
             "url": url
         }
     except ParseError:
+        return None
+    except ConnectionError:
         return None
