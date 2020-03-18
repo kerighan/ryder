@@ -37,7 +37,7 @@ def request(url, timeout=10):
         text = req.text
         if len(text) != 0 and text is not None:
             root = html.fromstring(text)
-            return text, root
+            return text, root, req.url
     raise ConnectionError
 
 

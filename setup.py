@@ -7,7 +7,7 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="ryder",
-    version="0.0.3",
+    version="0.0.4",
     author="Maixent Chenebaux",
     author_email="max.chbx@gmail.com",
     description="News reader for Python",

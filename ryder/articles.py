@@ -183,7 +183,7 @@ def read(url, lang=True):
     url = remove_campaign_from_url(url)
 
     try:
-        html, root = request(url)
+        html, root, url = request(url)
         
         title = get_title(html, root)
         desc = get_description(root)

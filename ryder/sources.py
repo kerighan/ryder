@@ -29,5 +29,5 @@ def get_urls(root, url):
 
 
 def build(url):
-    html, root = request(url)
+    html, root, url = request(url)
     return get_urls(root, url)
