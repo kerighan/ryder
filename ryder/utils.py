@@ -12,7 +12,7 @@ utc = pytz.UTC
 
 directory = os.path.dirname(__file__)
 headers_filename = os.path.join(
-    directory, "ressources/headers.json")
+    directory, os.path.join("ressources", "headers.json"))
 with open(headers_filename) as f:
     headers = json.load(f)
 
