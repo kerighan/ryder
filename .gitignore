@@ -116,6 +116,5 @@ dmypy.json
 **/.vscode
 **/*.dikt
 **/*.p
-**/*.json
 **/*.dat
 **/*.npy
