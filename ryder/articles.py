@@ -2,7 +2,6 @@ from .utils import request, to_str, bound_time, get_element_id, get_lang
 from .clean import clean_str, remove_campaign_from_url
 from .errors import ParseError
 from collections import defaultdict
-import dateparser
 import datetime
 import re
 
@@ -60,6 +59,8 @@ def get_author(root):
 
 @bound_time
 def get_created_time(html, root):
+    import dateparser
+
     t = root.xpath("//meta[@itemprop='dateModified']")
     if len(t) > 0:
         created_time = dateparser.parse(t[0].attrib.get("content", ""))
@@ -184,6 +185,16 @@ def get_content(root):
             return "\n\n".join([to_str(y) for y in paragraphs[id_max]])
         return None
     except Exception:
+        return None
+
+
+def get_image_from_url(url):
+    try:
+        html, root, url = request(url)
+        return get_image(root)
+    except ParseError:
+        return None
+    except ConnectionError:
         return None
 
 
