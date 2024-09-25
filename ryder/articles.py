@@ -89,23 +89,23 @@ def get_created_time(html, root):
     if len(t) > 0:
         created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
-    
+
     t = root.xpath("//meta[@property='article:published_time']")
     if len(t) > 0:
         created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
-    
+
     t = root.xpath("//meta[@property='twitter:article:published_time']")
     if len(t) > 0:
         created_time = dateparser.parse(t[0].attrib.get("content", ""))
         return created_time
 
-    t = re.findall(r'dateModified\":[\s]+\"(.+?)\"', html)
+    t = re.findall(r"dateModified\":[\s]+\"(.+?)\"", html)
     if len(t) > 0:
         created_time = dateparser.parse(t[0])
         return created_time
 
-    t = re.findall(r'datePublished\":[\s]+\"(.+?)\"', html)
+    t = re.findall(r"datePublished\":[\s]+\"(.+?)\"", html)
     if len(t) > 0:
         created_time = dateparser.parse(t[0])
         return created_time
@@ -158,28 +158,33 @@ def get_image(root):
 
 @clean_str
 def get_content(root):
-    t = root.xpath("//*/*[self::p or self::h2 or self::div[@class='article__body']]")
-    paragraphs = defaultdict(list)
-    length = defaultdict(int)
-    max_length = 0
-    id_max = None
-    for item in t:
-        parent = item.getparent()
-        id_parent = get_element_id(parent)
-        paragraphs[id_parent].append(item)
+    try:
+        t = root.xpath(
+            "//*/*[self::p or self::h2 or self::div[@class='article__body']]"
+        )
+        paragraphs = defaultdict(list)
+        length = defaultdict(int)
+        max_length = 0
+        id_max = None
+        for item in t:
+            parent = item.getparent()
+            id_parent = get_element_id(parent)
+            paragraphs[id_parent].append(item)
 
-        content_strip = re.sub(r"[\s\n]", "", to_str(item))
-        length[id_parent] += len(content_strip)
-        if "article" in id_parent:
+            content_strip = re.sub(r"[\s\n]", "", to_str(item))
             length[id_parent] += len(content_strip)
+            if "article" in id_parent:
+                length[id_parent] += len(content_strip)
 
-        if length[id_parent] > max_length:
-            max_length = length[id_parent]
-            id_max = id_parent
+            if length[id_parent] > max_length:
+                max_length = length[id_parent]
+                id_max = id_parent
 
-    if id_max is not None:
-        return "\n\n".join([to_str(y) for y in paragraphs[id_max]])
-    return None
+        if id_max is not None:
+            return "\n\n".join([to_str(y) for y in paragraphs[id_max]])
+        return None
+    except Exception:
+        return None
 
 
 def read(url, lang=True):
@@ -187,7 +192,7 @@ def read(url, lang=True):
 
     try:
         html, root, url = request(url)
-        
+
         title = get_title(html, root)
         desc = get_description(root)
         created_time = get_created_time(html, root)
@@ -208,7 +213,7 @@ def read(url, lang=True):
             "content": content,
             "lang": detected_lang,
             "author": author,
-            "url": url
+            "url": url,
         }
     except ParseError:
         return None
