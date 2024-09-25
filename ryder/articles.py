@@ -122,7 +122,10 @@ def get_created_time(html, root):
 
     t = root.xpath("//*[contains(@class, 'date')]")
     if len(t) > 0:
-        created_time = dateparser.parse(to_str(t[0]))
+        try:
+            created_time = dateparser.parse(to_str(t[0]))
+        except RecursionError:
+            created_time = t[0]
         return created_time
 
     t = re.findall(r"updat=([^\s]+)", html)

@@ -11,8 +11,7 @@ from lxml.etree import tostring
 utc = pytz.UTC
 
 directory = os.path.dirname(__file__)
-headers_filename = os.path.join(
-    directory, os.path.join("ressources", "headers.json"))
+headers_filename = os.path.join(directory, os.path.join("ressources", "headers.json"))
 with open(headers_filename) as f:
     headers = json.load(f)
 
@@ -20,6 +19,7 @@ with open(headers_filename) as f:
 def get_lang(title, desc, content):
     from langdetect import detect
     from langdetect.lang_detect_exception import LangDetectException
+
     try:
         if desc is not None:
             return detect(title)
@@ -42,16 +42,14 @@ def request(url, timeout=10):
 
 
 def get_source(url):
-    source = re.match(
-        r'^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)', url)
+    source = re.match(r"^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)", url)
     if source is not None:
         return source.group(0).strip()
     return None
 
 
 def get_stop_urls():
-    stop_urls_filename = os.path.join(
-        directory, "ressources/stop_urls.txt")
+    stop_urls_filename = os.path.join(directory, "ressources/stop_urls.txt")
     with open(stop_urls_filename) as f:
         return set(f.read().split())
 
@@ -64,8 +62,7 @@ def bound_time(func):
     def wrapper(*args, **kwargs):
         res = func(*args, **kwargs)
         if res is not None:
-            now = utc.localize(
-                        datetime.datetime.now())
+            now = utc.localize(datetime.datetime.now())
             try:
                 if utc.localize(res) > now:
                     res = datetime.datetime.now()
@@ -75,8 +72,9 @@ def bound_time(func):
                     res = datetime.datetime.now()
                 return res
         else:
-            print("date is None")
+            # print("date is None")
             return datetime.datetime.now()
+
     return wrapper
 
 
