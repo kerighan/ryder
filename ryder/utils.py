@@ -6,7 +6,8 @@ import requests
 import datetime
 from lxml import html
 from lxml.etree import tostring
-
+from pydoll.browser.chromium import Chrome
+import asyncio
 
 utc = pytz.UTC
 
@@ -31,14 +32,32 @@ def get_lang(title, desc, content):
         return None
 
 
+def fetch_with_pydoll(url: str, timeout: float):
+    async def _inner():
+        async with Chrome() as browser:
+            tab = await browser.start(headless=True)
+            await tab.go_to(url, timeout=timeout)
+            content = await tab.page_source
+            return content
+
+    return asyncio.run(_inner())
+
+
 def request(url, timeout=10):
-    req = requests.get(url, headers=headers, timeout=timeout)
+    try:
+        req = requests.get(url, headers=headers, timeout=timeout)
+    except requests.exceptions.SSLError:
+        req = requests.get(url, headers=headers, timeout=timeout, verify=False)
+
     if req.status_code == 200:
         text = req.text
         if len(text) != 0 and text is not None:
             root = html.fromstring(text)
             return text, root, req.url
-    raise ConnectionError
+
+    text = fetch_with_pydoll(url, timeout=timeout)
+    root = html.fromstring(text)
+    return text, root, url
 
 
 def get_source(url):
